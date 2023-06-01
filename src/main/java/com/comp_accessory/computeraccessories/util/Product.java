@@ -10,10 +10,9 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Product {
     private String serialNumber;
-    private LocalDate producedDate=LocalDate.now();
+    private String producer;
     private BigInteger price;
     private Integer numberOfRemainingProducts;
 }
