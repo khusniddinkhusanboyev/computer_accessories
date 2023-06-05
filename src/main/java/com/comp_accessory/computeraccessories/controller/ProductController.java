@@ -8,18 +8,27 @@ import com.comp_accessory.computeraccessories.service.ProductExtraService;
 import com.comp_accessory.computeraccessories.service.ProductService;
 import com.comp_accessory.computeraccessories.util.ProductRequest;
 import com.comp_accessory.computeraccessories.util.ResponseApi;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
+@Tag(name = "ProductController", description = "zer")
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ProductController {
     private final ProductService productService;
     private final ProductExtraService productExtraService;
     private final ProductRepository productRepository;
+
 
     @PostMapping("/add-product")
     public ResponseEntity<?> addProduct(@RequestBody ProductRequest productRequest) {
