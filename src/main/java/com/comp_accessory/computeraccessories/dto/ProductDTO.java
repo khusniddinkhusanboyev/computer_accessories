@@ -1,14 +1,10 @@
 package com.comp_accessory.computeraccessories.dto;
-
 import com.comp_accessory.computeraccessories.entity.Category;
 import com.comp_accessory.computeraccessories.entity.Product;
-import com.comp_accessory.computeraccessories.entity.ProductExtraDetails;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
+import java.util.Comparator;
 import java.util.List;
 @Data
 @NoArgsConstructor
@@ -16,14 +12,19 @@ import java.util.List;
 @Builder
 public class ProductDTO {
     private Long id;
+    @NotNull(message = "Enter Serial Number")
     private String serialNumber;
+    @NotNull(message = "Enter Manufacturer")
     private String manufacturer;
+    @NotNull(message = "Enter Price")
     private double price;
+    @NotNull(message = "Enter Quantity")
     private int quantity;
     private Category category;
-    private List<ProductExtraDetails> productExtraDetails;
+    private List<ProductExtraDTO> productExtraDTOList;
 
-    public static ProductDTO mapToProductDTO(Product product){
+    public static ProductDTO mapToProductDTO(Product product , List<ProductExtraDTO> productExtraDTOList){
+        var  productExtraDTOS = productExtraDTOList.stream().sorted(Comparator.comparingInt(ProductExtraDTO::getId)).toList();
         return ProductDTO.builder()
                 .id(product.getId())
                 .serialNumber(product.getSerialNumber())
@@ -31,7 +32,7 @@ public class ProductDTO {
                 .price(product.getPrice())
                 .quantity(product.getQuantity())
                 .category(product.getCategory())
-                .productExtraDetails(product.getProductExtraDetails())
+                .productExtraDTOList(productExtraDTOS)
                 .build();
     }
 }

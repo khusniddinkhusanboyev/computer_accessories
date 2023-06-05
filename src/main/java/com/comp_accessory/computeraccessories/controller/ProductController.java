@@ -1,7 +1,7 @@
 package com.comp_accessory.computeraccessories.controller;
 
+import com.comp_accessory.computeraccessories.dto.ProductDTO;
 import com.comp_accessory.computeraccessories.entity.Product;
-import com.comp_accessory.computeraccessories.entity.ProductExtraDetails;
 import com.comp_accessory.computeraccessories.service.ProductExtraService;
 import com.comp_accessory.computeraccessories.service.ProductService;
 import com.comp_accessory.computeraccessories.util.ResponseApi;
@@ -20,7 +20,7 @@ public class ProductController {
 
     @PostMapping("/add-product")
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
-        System.err.println(product.toString());
+
         productExtraService.addDetail(product.getProductExtraDetails());
         var addProduct = productService.addProduct(product);
 
