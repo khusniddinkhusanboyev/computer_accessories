@@ -1,6 +1,8 @@
 package com.comp_accessory.computeraccessories.dto;
 import com.comp_accessory.computeraccessories.entity.Category;
 import com.comp_accessory.computeraccessories.entity.Product;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -20,19 +22,24 @@ public class ProductDTO {
     private double price;
     @NotNull(message = "Enter Quantity")
     private int quantity;
-    private Category category;
+    @NotNull(message = "Enter Category")
+    private String category;
+    @JsonProperty("productExtra")
     private List<ProductExtraDTO> productExtraDTOList;
 
-    public static ProductDTO mapToProductDTO(Product product , List<ProductExtraDTO> productExtraDTOList){
-        var  productExtraDTOS = productExtraDTOList.stream().sorted(Comparator.comparingInt(ProductExtraDTO::getId)).toList();
-        return ProductDTO.builder()
+    public static ProductDTO mapToProductDTO(Product product) {
+          return ProductDTO.builder()
                 .id(product.getId())
                 .serialNumber(product.getSerialNumber())
                 .manufacturer(product.getManufacturer())
                 .price(product.getPrice())
                 .quantity(product.getQuantity())
-                .category(product.getCategory())
-                .productExtraDTOList(productExtraDTOS)
+                .category(product.getCategory().getName())
+                .productExtraDTOList(ProductExtraDTO.mapToExtraProductDTO(product.getProductExtraDetails()))
                 .build();
+    }
+
+    public static List<ProductDTO>mapToProductDTO(List<Product> product) {
+         return product.stream().map(ProductDTO::mapToProductDTO).toList();
     }
 }
