@@ -16,4 +16,5 @@ public class ProductExtraDTO {
    @NotNull(message = "Enter Detail Value")
    private String detailValue;
 
+   publ
 }
