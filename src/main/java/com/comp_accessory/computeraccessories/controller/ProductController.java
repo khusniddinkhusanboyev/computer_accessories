@@ -1,21 +1,15 @@
 package com.comp_accessory.computeraccessories.controller;
 
 import com.comp_accessory.computeraccessories.dto.ProductDTO;
-import com.comp_accessory.computeraccessories.entity.Category;
+import com.comp_accessory.computeraccessories.entity.ProductTypeEnum;
 import com.comp_accessory.computeraccessories.entity.Product;
 import com.comp_accessory.computeraccessories.repository.ProductRepository;
-import com.comp_accessory.computeraccessories.service.ProductExtraService;
-import com.comp_accessory.computeraccessories.service.ProductService;
+import com.comp_accessory.computeraccessories.service.ProductExtraServiceImpl;
+import com.comp_accessory.computeraccessories.service.ProductServiceImpl;
 import com.comp_accessory.computeraccessories.util.ProductRequest;
-import com.comp_accessory.computeraccessories.util.ResponseApi;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,65 +17,61 @@ import java.util.List;
 @RestController
 @Tag(name = "ProductController", description = "zer")
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductController {
-    private final ProductService productService;
-    private final ProductExtraService productExtraService;
+    private final ProductServiceImpl productServiceImpl;
+    private final ProductExtraServiceImpl productExtraService;
     private final ProductRepository productRepository;
 
-
-    @PostMapping("/add-product")
-    public ResponseEntity<?> addProduct(@RequestBody ProductRequest productRequest) {
+    @PostMapping("/add")
+    public ProductDTO addProduct(@Valid @RequestBody ProductRequest productRequest) {
         productExtraService.addDetail(productRequest.getProductExtraDetails());
-        var addProduct = productService.addProduct(
+        return productServiceImpl.addProduct(
                 Product.builder()
                         .serialNumber(productRequest.getSerialNumber())
                         .manufacturer(productRequest.getManufacturer())
                         .price(productRequest.getPrice())
                         .quantity(productRequest.getQuantity())
-                        .category(productRequest.getCategory())
-                        .productExtraDetails(productRequest.getProductExtraDetails())
+                        .productTypeEnum(productRequest.getProductTypeEnum())
+                        .productExtra(productRequest.getProductExtraDetails())
                         .build());
-        return ResponseEntity.ok(new ResponseApi(true, "Product saved", addProduct));
     }
 
-    @PutMapping("/update-product")
-    public ResponseEntity<?> updateProduct(@RequestBody ProductRequest productRequest) {
-        productExtraService.addDetail(productRequest.getProductExtraDetails());
-        var addProduct = productService.addProduct(
+    @PutMapping("/update")
+    public ProductDTO updateProduct(@Valid @RequestBody ProductRequest productRequest) {
+        return productServiceImpl.addProduct(
                 Product.builder()
                         .id(productRequest.getId())
                         .serialNumber(productRequest.getSerialNumber())
                         .manufacturer(productRequest.getManufacturer())
                         .price(productRequest.getPrice())
                         .quantity(productRequest.getQuantity())
-                        .category(productRequest.getCategory())
-                        .productExtraDetails(productRequest.getProductExtraDetails())
+                        .productTypeEnum(productRequest.getProductTypeEnum())
+                        .productExtra(productRequest.getProductExtraDetails())
                         .build());
 
-        return ResponseEntity.ok(new ResponseApi(true, "Product updated", addProduct));
 
     }
 
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAll() {
-        List<ProductDTO> products = productService.getAllProducts();
-        return ResponseEntity.ok(new ResponseApi(true, "All products", products));
+    public List<ProductDTO> getAll() {
+
+        return productServiceImpl.getAllProducts();
+
     }
 
     @GetMapping("/{categoryEnum}")
-    public ResponseApi getByCategory(@PathVariable("categoryEnum") String category) {
-        List<ProductDTO> products = productService.getProductsByCategory(Category.valueOf(category));
-        return new ResponseApi(true, "Product by Type", products);
+    public List<ProductDTO> getByCategory(@Valid @PathVariable("categoryEnum") String category) {
+
+        return productServiceImpl.getProductsByCategory(ProductTypeEnum.valueOf(category));
     }
 
     @GetMapping("/product/{id}")
-    private ResponseEntity<?> getProductById(@PathVariable("id") Long id) {
-        if (!productService.getProductById(id).isPresent()) {
-            ResponseEntity.ok(new ResponseApi(false, "Product not found", null));
+    private ProductDTO getProductById(@PathVariable("id") Long id) {
+        if (!productServiceImpl.getProductById(id).isPresent()) {
+            return null;
         }
-        return ResponseEntity.ok(new ResponseApi(true, "Product by id ", productService.getProductById(id)));
-
+        return productServiceImpl.getProductById(id).get();
     }
 }

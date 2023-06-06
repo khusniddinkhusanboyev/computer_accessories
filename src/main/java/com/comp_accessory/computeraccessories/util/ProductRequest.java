@@ -1,9 +1,7 @@
 package com.comp_accessory.computeraccessories.util;
 
-import com.comp_accessory.computeraccessories.dto.ProductExtraDTO;
-import com.comp_accessory.computeraccessories.entity.Category;
+import com.comp_accessory.computeraccessories.entity.ProductTypeEnum;
 import com.comp_accessory.computeraccessories.entity.ProductExtraDetails;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +25,6 @@ public class ProductRequest {
     @NotNull(message = "Enter Quantity")
     private int quantity;
     @NotNull(message = "Enter Category")
-    private Category category;
+    private ProductTypeEnum productTypeEnum;
      private List<ProductExtraDetails> productExtraDetails;
 }

@@ -12,22 +12,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name="product")
 @Builder
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(name = "serialNumber")
     private String serialNumber;
+    @Column(name = "manufacturer")
     private String manufacturer;
+    @Column(name = "price")
     private double price;
+    @Column(name = "quantity")
     private int quantity;
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private ProductTypeEnum productTypeEnum;
 
+    @Column(name = "productExtra")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "product_product_details",
             joinColumns = { @JoinColumn(name = "product_id") },
             inverseJoinColumns = { @JoinColumn(name = "product_details_id")})
-    private List<ProductExtraDetails> productExtraDetails;
+    private List<ProductExtraDetails> productExtra;
 
 }
